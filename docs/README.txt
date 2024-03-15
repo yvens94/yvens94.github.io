@@ -1,32 +1,24 @@
-Massively by HTML5 UP
-html5up.net | @ajlkn
-Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+### Hi there, I'm Jean Yvens Alberus 👋
 
+<img src='' title='Yvens' width='50%' alt='My Intro' />
 
-This is Massively, a text-heavy, article-oriented design built around a huge background
-image (with a new parallax implementation I'm testing) and scroll effects (powered by
-Scrollex). A *slight* departure from all the one-pagers I've been doing lately, but one
-that fulfills a few user requests and makes use of some new techniques I've been wanting
-to try out. Enjoy it :)
+### About Me
 
-Demo images* courtesy of Unsplash, a radtastic collection of CC0 (public domain) images
-you can use for pretty much whatever.
+- 🔭 A passionate about Analytics, Data science and AI at scale (Cloud computing). 🟢⚫
+- 🎓 I like investigating and building, solve problems with technology
+- 🌱 In my Free I work on side projects you can check out here on my github, on LinkedIn, my portfolio website and I make content about AI on tiktok
+- ⚡ Check out my <a href="https://www.linkedin.com/in/jean-yvens-alberus-986671169" target="_blank" rel="noreferrer noopener">LinkedIn 🔵</a> and <a href="https://yvens94.github.io/" target="_blank" rel="noreferrer noopener">portfolio website 🔴</a>!
 
-(* = not included)
+### GitHub Stats
 
-AJ
-aj@lkn.io | @ajlkn
+- 🦾 programming: Python, SQL
+- 💻 Visualization: Tableau, PowerBI, matplotlib, seaborn, Excel, Quicksights
+- 🛠 Frameworks and tools: Visual Studio Code, pycharm, Tensorflow, Keras, Hugginface, 
 
-
-Credits:
-
-	Demo Images:
-		Unsplash (unsplash.com)
-
-	Icons:
-		Font Awesome (fontawesome.io)
-
-	Other:
-		jQuery (jquery.com)
-		Scrollex (github.com/ajlkn/jquery.scrollex)
-		Responsive Tools (github.com/ajlkn/responsive-tools)
+<a href="https://github.com/yvens94">
+  <img align="center" src="https://github.com/yvens94
+username=coderkai03&hide=makefile,html,tex&title_color=ffffff&text_color=c9cacc&icon_color=2bbc8a&bg_color=1d1f21&langs_count=3" />
+</a>
+<a href="https://github.com/yvens94">
+  <img align="center" src="https://github-readme-stats.vercel.app/api?username=yvens943&show_icons=true&line_height=27&count_private=true&title_color=ffffff&text_color=c9cacc&icon_color=2bbc8a&bg_color=1d1f21" />
+</a>
