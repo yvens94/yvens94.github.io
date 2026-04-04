@@ -283,19 +283,52 @@
       return data.sha;
     }
 
-    async function pushPostsJson(posts) {
+    // Read current posts.json from GitHub → { posts, sha }
+    async function readGitHubPosts() {
       const cfg = getCfg();
-      const sha = await getPostsJsonSha();
-      const content = JSON.stringify(posts, null, 2);
+      const res = await ghGet(`/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}`);
+      if (res.status === 404) return { posts: [], sha: null };
+      if (!res.ok) throw new Error(`GitHub ${res.status}`);
+      const data = await res.json();
+      let posts = [];
+      try { posts = JSON.parse(fromB64(data.content)); } catch {}
+      return { posts, sha: data.sha };
+    }
+
+    // Write a list of posts directly to GitHub (low-level)
+    async function writeGitHubPosts(posts, sha) {
+      const cfg = getCfg();
       const res = await ghPut(
         `/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`,
-        content, sha,
+        JSON.stringify(posts, null, 2), sha,
         `Update posts.json (${new Date().toISOString().slice(0,10)})`
       );
       if (!res.ok) {
         const err = await res.json();
         throw new Error(err.message || `GitHub ${res.status}`);
       }
+    }
+
+    // Merge one or more posts INTO GitHub (never overwrites unrelated posts)
+    async function mergePostsToGitHub(postsToMerge) {
+      const { posts: ghPosts, sha } = await readGitHubPosts();
+      for (const post of postsToMerge) {
+        const idx = ghPosts.findIndex(p => p.id === post.id);
+        if (idx > -1) ghPosts[idx] = post;
+        else ghPosts.push(post);
+      }
+      await writeGitHubPosts(ghPosts, sha);
+    }
+
+    // Remove a single post from GitHub by id
+    async function removePostFromGitHub(id) {
+      const { posts: ghPosts, sha } = await readGitHubPosts();
+      await writeGitHubPosts(ghPosts.filter(p => p.id !== id), sha);
+    }
+
+    // Legacy alias used by syncAllToGitHub — merges local into GitHub
+    async function pushPostsJson(posts) {
+      await mergePostsToGitHub(posts);
     }
 
     // ════════════════════════════════
@@ -381,8 +414,10 @@
       msg.style.display = 'none';
 
       try {
-        const published = getPosts().filter(p => !p.draft);
-        await pushPostsJson(published);
+        // Merge only this post into GitHub (safe — won't touch other posts)
+        const { id: postId } = editId ? posts.find(p => p.id === editId) || {} : posts[posts.length - 1];
+        const postToPublish = posts.find(p => p.id === (editId || posts[posts.length - 1].id));
+        await mergePostsToGitHub([{ id: postToPublish.id, title, date, body }]);
         msg.textContent = '✓ Published to GitHub!';
         msg.style.color = '#6ee7b7';
         msg.style.display = 'block';
@@ -438,7 +473,7 @@
         msg.style.color = '#fbbf24';
         msg.style.display = 'block';
         try {
-          await pushPostsJson(posts.filter(p => !p.draft));
+          await removePostFromGitHub(id);
           msg.textContent = '✓ Deleted from GitHub.';
           msg.style.color = '#6ee7b7';
         } catch (e) {
