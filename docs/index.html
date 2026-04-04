@@ -10,18 +10,39 @@
 
   <header>
     <div class="container">
-      <a href="index.html" class="logo" id="header-name">Jean Yvens Alberus</a>
-      <nav>
-        <a href="index.html" class="nav-active">Blog</a>
-        <a href="about.html">About</a>
-        <a href="admin.html">Admin</a>
-      </nav>
+      <!-- Left: pic + name -->
+      <a href="index.html" class="header-brand">
+        <img class="header-pic" src="images/me%20dataanalyst.jpg" alt="" />
+        <span class="logo" id="header-name">Jean Yvens Alberus</span>
+      </a>
+      <!-- Right: nav + socials -->
+      <div class="header-right">
+        <nav>
+          <a href="index.html" class="nav-active">Blog</a>
+          <a href="about.html">About</a>
+          <a href="admin.html">Admin</a>
+        </nav>
+        <div class="header-socials">
+          <a href="https://www.linkedin.com/in/jean-yvens-alberus-986671169" target="_blank" rel="noopener" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+          <a href="https://x.com/yvenjee?s=21" target="_blank" rel="noopener" title="X"><svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.213 5.567zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+          <a href="https://www.instagram.com/1yvens?igsh=bzczazlqYzI4NjAz&utm_source=qr" target="_blank" rel="noopener" title="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg></a>
+          <a href="https://www.tiktok.com/@1yvensj?_r=1&_t=ZS-95Fs2NFF9mu" target="_blank" rel="noopener" title="TikTok"><svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.18 8.18 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/></svg></a>
+          <a href="https://www.facebook.com/share/1HWRe4J5ms/?mibextid=wwXIfr" target="_blank" rel="noopener" title="Facebook"><svg viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg></a>
+          <a href="https://www.threads.com/@1yvens?invite=0" target="_blank" rel="noopener" title="Threads"><svg viewBox="0 0 24 24"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.312-.883-2.387-.89h-.045c-.8 0-1.855.207-2.545.612l-1.166-1.7c.895-.613 2.253-1.166 3.945-1.14 1.71.024 3.12.615 4.062 1.582.987 1.009 1.488 2.475 1.488 4.397 0 .088-.004.176-.006.264A5.94 5.94 0 0 1 21 12.96c.031.367.047.737.047 1.11 0 3.67-1.028 6.393-3.057 8.094-1.715 1.446-3.986 2.18-6.75 2.18-.018 0-.036-.001-.054-.001zm.617-9.62c.074 0 .147.002.22.007 1.02.059 1.792.396 2.294 1.001.315.378.529.863.635 1.432a6.77 6.77 0 0 0-2.514-.416c-1.03.058-1.808.333-2.243.778-.303.311-.445.699-.418 1.09.051.798.907 1.485 2.21 1.414.96-.052 1.694-.444 2.18-1.165.383-.572.601-1.335.646-2.27a4.618 4.618 0 0 0-.002-.075 7.787 7.787 0 0 0-2.011-.246l-.997-.55z"/></svg></a>
+        </div>
+      </div>
     </div>
   </header>
 
+  <!-- Search bar -->
+  <div class="search-bar">
+    <div class="container">
+      <input type="search" id="search-input" placeholder="Search posts…" oninput="filterPosts(this.value)" />
+    </div>
+  </div>
+
   <section id="blog">
     <div class="container">
-      <h2>Blog</h2>
       <div id="post-list"><div class="no-posts" style="opacity:0.5;">Loading…</div></div>
     </div>
   </section>
@@ -46,7 +67,6 @@
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 
-    // load display name from bio (still local — bio editing is admin-only)
     const storedBio = JSON.parse(localStorage.getItem('jya_bio') || 'null');
     if (storedBio && storedBio.name) {
       document.getElementById('header-name').textContent = storedBio.name;
@@ -58,40 +78,38 @@
     async function loadPosts() {
       try {
         const res = await fetch('posts.json?t=' + Date.now());
-        if (!res.ok) throw new Error('fetch failed');
+        if (!res.ok) throw new Error();
         allPosts = await res.json();
-      } catch {
-        allPosts = [];
-      }
-      renderPosts();
+      } catch { allPosts = []; }
+      renderPosts(allPosts);
     }
 
     function fmtDate(iso) {
-      return new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
-    }
-
-    function plainText(md) {
-      return md.replace(/[#*`>\-\[\]()!]/g, '').replace(/\n+/g, ' ').trim();
+      return new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { year:'numeric', month:'short', day:'numeric' });
     }
 
     function escHtml(s) {
       return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    function renderPosts() {
-      const posts = allPosts.slice().sort((a, b) => b.date.localeCompare(a.date));
+    function renderPosts(posts) {
+      const sorted = posts.slice().sort((a, b) => b.date.localeCompare(a.date));
       const el = document.getElementById('post-list');
-      if (!posts.length) {
-        el.innerHTML = '<div class="no-posts">No posts yet.</div>';
+      if (!sorted.length) {
+        el.innerHTML = '<div class="no-posts">No posts found.</div>';
         return;
       }
-      el.innerHTML = posts.map(p => `
+      el.innerHTML = sorted.map(p => `
         <div class="post-card" onclick="openPost('${escHtml(p.id)}')">
-          <div class="post-date">${fmtDate(p.date)}</div>
-          <h3>${escHtml(p.title)}</h3>
-          <div class="post-excerpt">${escHtml(plainText(p.body).slice(0, 180))}</div>
+          <span class="post-date">${fmtDate(p.date)}</span>
+          <span class="post-title-inline">${escHtml(p.title)}</span>
         </div>
       `).join('');
+    }
+
+    function filterPosts(query) {
+      const q = query.trim().toLowerCase();
+      renderPosts(q ? allPosts.filter(p => p.title.toLowerCase().includes(q)) : allPosts);
     }
 
     function openPost(id) {
