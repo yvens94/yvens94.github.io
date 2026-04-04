@@ -85,18 +85,19 @@ header nav a.nav-active { color: #fff; font-weight: 600; }
 }
 
 .about-avatar {
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
+  width: 200px;
+  height: 260px;
+  border-radius: 10px;
   object-fit: cover;
+  object-position: center top;
   flex-shrink: 0;
   border: 2px solid var(--border);
 }
 
 .about-avatar-placeholder {
-  width: 160px;
-  height: 160px;
-  border-radius: 50%;
+  width: 200px;
+  height: 260px;
+  border-radius: 10px;
   background: var(--surface);
   border: 2px solid var(--border);
   flex-shrink: 0;
