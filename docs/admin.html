@@ -397,7 +397,27 @@
       const msg = document.getElementById('save-msg');
 
       if (draft) {
-        // Draft — localStorage only
+        // Saving as draft — also remove from GitHub if it was previously live
+        const btn = document.getElementById('publish-btn');
+        const wasLive = editId && (() => {
+          // check if this id exists in GitHub by attempting remove
+          return true; // always attempt; removePostFromGitHub is safe if not present
+        })();
+
+        if (editId) {
+          btn.disabled = true;
+          msg.textContent = 'Updating GitHub…';
+          msg.style.color = '#fbbf24';
+          msg.style.display = 'block';
+          try {
+            await removePostFromGitHub(editId);
+          } catch(e) {
+            // non-fatal: post may not have been live
+          } finally {
+            btn.disabled = false;
+          }
+        }
+
         msg.textContent = 'Draft saved!';
         msg.style.color = '#fbbf24';
         msg.style.display = 'block';
