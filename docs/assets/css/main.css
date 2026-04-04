@@ -1,5 +1,6 @@
 /* ===== RESET & BASE ===== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+img { max-width: 100%; display: block; }
 
 :root {
   --bg:       #0d0d0f;
@@ -63,6 +64,9 @@ header .container {
 .header-pic {
   width: 38px;
   height: 38px;
+  min-width: 38px;
+  max-width: 38px;
+  max-height: 38px;
   border-radius: 50%;
   object-fit: cover;
   object-position: center top;
