@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin — Jean Yvens Alberus</title>
+  <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+<body>
+
+  <!-- ══ AUTH SCREEN ══ -->
+  <div class="auth-screen" id="auth-screen">
+    <div class="auth-box">
+      <h2>Admin</h2>
+      <p>Enter your GitHub Personal Access Token to continue.<br/>
+         The token is stored only in your browser — never in the code.</p>
+      <div class="form-group" style="text-align:left;margin-bottom:0.8rem;">
+        <input type="password" id="pat-input" placeholder="ghp_xxxxxxxxxxxx"
+               onkeydown="if(event.key==='Enter')tryLogin()" />
+      </div>
+      <button class="btn" onclick="tryLogin()" style="width:100%;justify-content:center;" id="login-btn">
+        Connect
+      </button>
+      <div class="auth-error" id="auth-error"></div>
+    </div>
+  </div>
+
+  <!-- ══ ADMIN UI ══ -->
+  <div id="admin-ui" style="display:none;">
+
+    <div class="admin-header">
+      <div class="container">
+        <span class="logo">Admin</span>
+        <div style="display:flex;gap:0.8rem;align-items:center;">
+          <a href="index.html" style="color:var(--muted);font-size:0.85rem;">&#8592; View site</a>
+          <button class="btn secondary" onclick="logout()" style="padding:0.3rem 0.8rem;font-size:0.8rem;">Logout</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div style="border-bottom:1px solid var(--border);">
+      <div class="container" style="display:flex;gap:0;">
+        <button class="admin-tab active" id="tab-posts" onclick="switchTab('posts')">Blog Posts</button>
+        <button class="admin-tab" id="tab-bio"   onclick="switchTab('bio')">Bio &amp; Profile</button>
+        <button class="admin-tab" id="tab-settings" onclick="switchTab('settings')">Settings</button>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top:1.5rem;padding-bottom:3rem;">
+
+      <!-- ── POSTS ── -->
+      <div id="panel-posts">
+        <div class="admin-layout">
+
+          <!-- Left: editor -->
+          <div class="admin-sidebar">
+            <input type="hidden" id="edit-id" />
+
+            <div class="form-group">
+              <label>Title</label>
+              <input type="text" id="post-title" placeholder="Post title…" oninput="updatePreview()" />
+            </div>
+
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" id="post-date" oninput="updatePreview()" />
+            </div>
+
+            <div class="form-group">
+              <label>Content (Markdown)</label>
+              <textarea id="md-editor"
+                placeholder="Write in Markdown…&#10;&#10;## Heading&#10;&#10;**Bold**, *italic*, `code`&#10;&#10;- list item"
+                oninput="updatePreview()"></textarea>
+            </div>
+
+            <div class="btn-row">
+              <button class="btn" id="publish-btn" onclick="savePost(false)">&#10003; Publish</button>
+              <button class="btn secondary" onclick="savePost(true)">Save Draft</button>
+              <button class="btn secondary" onclick="resetForm()">&#10005; Clear</button>
+            </div>
+
+            <div id="save-msg" style="font-size:0.82rem;display:none;"></div>
+
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-top:1.5rem;margin-bottom:0.6rem;">
+              <span class="section-label" style="margin:0;">All Posts</span>
+              <button class="btn secondary" id="sync-btn" onclick="syncAllToGitHub()" style="padding:0.25rem 0.7rem;font-size:0.78rem;">&#8593; Sync to GitHub</button>
+            </div>
+            <div id="sync-msg" style="font-size:0.82rem;display:none;margin-bottom:0.5rem;"></div>
+            <div class="posts-list-admin" id="admin-post-list"></div>
+          </div>
+
+          <!-- Right: preview -->
+          <div class="preview-pane">
+            <div class="preview-title" id="preview-title">Title preview</div>
+            <div class="preview-date"  id="preview-date">Date preview</div>
+            <div class="prose"         id="preview-body"></div>
+          </div>
+
+        </div>
+      </div><!-- /panel-posts -->
+
+      <!-- ── BIO ── -->
+      <div id="panel-bio" style="display:none;max-width:640px;">
+        <div class="form-group" style="margin-bottom:0.8rem;">
+          <label>Display Name</label>
+          <input type="text" id="bio-name-input" placeholder="Your name" />
+        </div>
+        <div class="form-group" style="margin-bottom:0.8rem;">
+          <label>Tagline</label>
+          <input type="text" id="bio-tagline-input" placeholder="e.g. Data Scientist — ML · AWS" />
+        </div>
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label>Bio</label>
+          <textarea id="bio-body-input" rows="6" placeholder="Write a short bio…" style="resize:vertical;"></textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn" onclick="saveBio()">&#10003; Save Bio</button>
+          <button class="btn secondary" onclick="loadBioIntoForm()">&#8635; Reset</button>
+        </div>
+        <div id="bio-save-msg" style="font-size:0.82rem;color:#6ee7b7;margin-top:0.6rem;display:none;">Bio saved!</div>
+      </div><!-- /panel-bio -->
+
+      <!-- ── SETTINGS ── -->
+      <div id="panel-settings" style="display:none;max-width:560px;">
+        <p style="color:var(--muted);font-size:0.9rem;margin-bottom:1.5rem;">
+          These tell the admin where to write <code>posts.json</code> in your repo.
+          Your PAT is stored only in your browser.
+        </p>
+        <div class="form-group" style="margin-bottom:0.8rem;">
+          <label>GitHub Owner</label>
+          <input type="text" id="cfg-owner" />
+        </div>
+        <div class="form-group" style="margin-bottom:0.8rem;">
+          <label>Repository</label>
+          <input type="text" id="cfg-repo" />
+        </div>
+        <div class="form-group" style="margin-bottom:0.8rem;">
+          <label>Branch</label>
+          <input type="text" id="cfg-branch" />
+        </div>
+        <div class="form-group" style="margin-bottom:0.8rem;">
+          <label>File path</label>
+          <input type="text" id="cfg-path" />
+        </div>
+        <div class="form-group" style="margin-bottom:1rem;">
+          <label>Personal Access Token</label>
+          <input type="password" id="cfg-pat" placeholder="ghp_xxxxxxxxxxxx" />
+        </div>
+        <div class="btn-row">
+          <button class="btn" onclick="saveSettings()">&#10003; Save Settings</button>
+        </div>
+        <div id="cfg-msg" style="font-size:0.82rem;color:#6ee7b7;margin-top:0.6rem;display:none;">Settings saved!</div>
+      </div><!-- /panel-settings -->
+
+    </div>
+  </div><!-- /admin-ui -->
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    // ════════════════════════════════
+    //  CONFIG
+    // ════════════════════════════════
+    const CFG_KEY   = 'jya_github';
+    const STORE_KEY = 'jya_posts';
+    const BIO_KEY   = 'jya_bio';
+
+    const DEFAULTS = {
+      owner:  'yvens94',
+      repo:   'yvens94.github.io',
+      branch: 'main',
+      path:   'docs/posts.json'
+    };
+
+    function getCfg() {
+      return Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem(CFG_KEY) || '{}'));
+    }
+
+    function getPAT() {
+      return getCfg().pat || '';
+    }
+
+    // ════════════════════════════════
+    //  AUTH — PAT is the password
+    // ════════════════════════════════
+    async function tryLogin() {
+      const pat = document.getElementById('pat-input').value.trim();
+      if (!pat) return;
+
+      const btn = document.getElementById('login-btn');
+      const err = document.getElementById('auth-error');
+      btn.textContent = 'Connecting…';
+      btn.disabled = true;
+      err.style.display = 'none';
+
+      const cfg = getCfg();
+      const res = await fetch(
+        `https://api.github.com/repos/${cfg.owner}/${cfg.repo}`,
+        { headers: { Authorization: `token ${pat}`, Accept: 'application/vnd.github.v3+json' } }
+      );
+
+      btn.textContent = 'Connect';
+      btn.disabled = false;
+
+      if (res.status === 200 || res.status === 301) {
+        const stored = getCfg();
+        stored.pat = pat;
+        localStorage.setItem(CFG_KEY, JSON.stringify(stored));
+        sessionStorage.setItem('jya_auth', '1');
+        showAdmin();
+      } else {
+        err.textContent = res.status === 401 ? 'Invalid token.' : `GitHub error ${res.status}.`;
+        err.style.display = 'block';
+      }
+    }
+
+    function logout() {
+      sessionStorage.removeItem('jya_auth');
+      // clear PAT from cfg
+      const cfg = getCfg();
+      delete cfg.pat;
+      localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
+      location.reload();
+    }
+
+    function showAdmin() {
+      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('admin-ui').style.display = 'block';
+      setTodayDate();
+      renderAdminList();
+      updatePreview();
+    }
+
+    // Auto-login if PAT already stored this session
+    if (sessionStorage.getItem('jya_auth') === '1' && getPAT()) showAdmin();
+
+    // ════════════════════════════════
+    //  GITHUB API
+    // ════════════════════════════════
+    // Unicode-safe base64
+    function toB64(str) {
+      const bytes = new TextEncoder().encode(str);
+      let bin = '';
+      bytes.forEach(b => bin += String.fromCharCode(b));
+      return btoa(bin);
+    }
+
+    function fromB64(b64) {
+      const bin = atob(b64.replace(/\n/g, ''));
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      return new TextDecoder().decode(bytes);
+    }
+
+    async function ghGet(apiPath) {
+      const res = await fetch(`https://api.github.com${apiPath}`, {
+        headers: { Authorization: `token ${getPAT()}`, Accept: 'application/vnd.github.v3+json' }
+      });
+      return res;
+    }
+
+    async function ghPut(apiPath, content, sha, message) {
+      const body = { message, content: toB64(content), branch: getCfg().branch };
+      if (sha) body.sha = sha;
+      const res = await fetch(`https://api.github.com${apiPath}`, {
+        method: 'PUT',
+        headers: {
+          Authorization: `token ${getPAT()}`,
+          Accept: 'application/vnd.github.v3+json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+      return res;
+    }
+
+    async function getPostsJsonSha() {
+      const cfg = getCfg();
+      const res = await ghGet(`/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}?ref=${cfg.branch}`);
+      if (res.status === 404) return null;          // file doesn't exist yet
+      if (!res.ok) throw new Error(`GitHub ${res.status}`);
+      const data = await res.json();
+      return data.sha;
+    }
+
+    async function pushPostsJson(posts) {
+      const cfg = getCfg();
+      const sha = await getPostsJsonSha();
+      const content = JSON.stringify(posts, null, 2);
+      const res = await ghPut(
+        `/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.path}`,
+        content, sha,
+        `Update posts.json (${new Date().toISOString().slice(0,10)})`
+      );
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || `GitHub ${res.status}`);
+      }
+    }
+
+    // ════════════════════════════════
+    //  LOCAL STORAGE (drafts + all posts for editor)
+    // ════════════════════════════════
+    function getPosts() {
+      try { return JSON.parse(localStorage.getItem(STORE_KEY)) || []; }
+      catch { return []; }
+    }
+
+    function savePosts(posts) {
+      localStorage.setItem(STORE_KEY, JSON.stringify(posts));
+    }
+
+    function uid() {
+      return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    }
+
+    function fmtDate(iso) {
+      return new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+    }
+
+    function setTodayDate() {
+      if (!document.getElementById('post-date').value)
+        document.getElementById('post-date').value = new Date().toISOString().slice(0, 10);
+    }
+
+    // ════════════════════════════════
+    //  PREVIEW
+    // ════════════════════════════════
+    function updatePreview() {
+      const title = document.getElementById('post-title').value || 'Title preview';
+      const date  = document.getElementById('post-date').value;
+      const body  = document.getElementById('md-editor').value;
+      document.getElementById('preview-title').textContent = title;
+      document.getElementById('preview-date').textContent  = date ? fmtDate(date) : 'No date';
+      document.getElementById('preview-body').innerHTML    = body
+        ? marked.parse(body)
+        : '<span style="color:var(--muted)">Start writing to see preview…</span>';
+    }
+
+    // ════════════════════════════════
+    //  SAVE / PUBLISH
+    // ════════════════════════════════
+    async function savePost(forceDraft) {
+      const title  = document.getElementById('post-title').value.trim();
+      const date   = document.getElementById('post-date').value;
+      const body   = document.getElementById('md-editor').value.trim();
+      const editId = document.getElementById('edit-id').value;
+      const draft  = typeof forceDraft === 'boolean' ? forceDraft : false;
+
+      if (!title) { alert('Please add a title.'); return; }
+      if (!date)  { alert('Please select a date.'); return; }
+      if (!body)  { alert('Post body is empty.'); return; }
+
+      // Update localStorage
+      const posts = getPosts();
+      if (editId) {
+        const idx = posts.findIndex(p => p.id === editId);
+        if (idx > -1) posts[idx] = { ...posts[idx], title, date, body, draft };
+      } else {
+        posts.push({ id: uid(), title, date, body, draft });
+      }
+      savePosts(posts);
+
+      const msg = document.getElementById('save-msg');
+
+      if (draft) {
+        // Draft — localStorage only
+        msg.textContent = 'Draft saved!';
+        msg.style.color = '#fbbf24';
+        msg.style.display = 'block';
+        setTimeout(() => { msg.style.display = 'none'; }, 2500);
+        resetForm();
+        renderAdminList();
+        return;
+      }
+
+      // Publish — push to GitHub
+      const btn = document.getElementById('publish-btn');
+      btn.disabled = true;
+      btn.textContent = 'Publishing…';
+      msg.style.display = 'none';
+
+      try {
+        const published = getPosts().filter(p => !p.draft);
+        await pushPostsJson(published);
+        msg.textContent = '✓ Published to GitHub!';
+        msg.style.color = '#6ee7b7';
+        msg.style.display = 'block';
+        setTimeout(() => { msg.style.display = 'none'; }, 3000);
+        resetForm();
+        renderAdminList();
+      } catch (e) {
+        msg.textContent = '✗ ' + e.message;
+        msg.style.color = '#f87171';
+        msg.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '✓ Publish';
+      }
+    }
+
+    // ════════════════════════════════
+    //  FORM HELPERS
+    // ════════════════════════════════
+    function resetForm() {
+      document.getElementById('edit-id').value      = '';
+      document.getElementById('post-title').value   = '';
+      document.getElementById('md-editor').value    = '';
+      setTodayDate();
+      updatePreview();
+    }
+
+    function editPost(id) {
+      const post = getPosts().find(p => p.id === id);
+      if (!post) return;
+      document.getElementById('edit-id').value    = post.id;
+      document.getElementById('post-title').value = post.title;
+      document.getElementById('post-date').value  = post.date;
+      document.getElementById('md-editor').value  = post.body;
+      updatePreview();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    async function deletePost(id) {
+      const post = getPosts().find(p => p.id === id);
+      if (!post) return;
+      if (!confirm(`Delete "${post.title}"? This cannot be undone.`)) return;
+
+      const posts = getPosts().filter(p => p.id !== id);
+      savePosts(posts);
+      if (document.getElementById('edit-id').value === id) resetForm();
+      renderAdminList();
+
+      if (!post.draft) {
+        // Also remove from GitHub
+        const msg = document.getElementById('save-msg');
+        msg.textContent = 'Updating GitHub…';
+        msg.style.color = '#fbbf24';
+        msg.style.display = 'block';
+        try {
+          await pushPostsJson(posts.filter(p => !p.draft));
+          msg.textContent = '✓ Deleted from GitHub.';
+          msg.style.color = '#6ee7b7';
+        } catch (e) {
+          msg.textContent = '✗ ' + e.message;
+          msg.style.color = '#f87171';
+        }
+        setTimeout(() => { msg.style.display = 'none'; }, 3000);
+      }
+    }
+
+    function escHtml(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function renderAdminList() {
+      const posts = getPosts().sort((a, b) => b.date.localeCompare(a.date));
+      const el = document.getElementById('admin-post-list');
+      if (!posts.length) {
+        el.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;">No posts yet.</div>';
+        return;
+      }
+      el.innerHTML = posts.map(p => `
+        <div class="post-item-admin">
+          <span class="item-title">${escHtml(p.title)}</span>
+          ${p.draft
+            ? '<span style="font-size:0.72rem;background:#3a2a00;color:#fbbf24;border:1px solid #7a5a00;border-radius:4px;padding:0.1rem 0.4rem;">draft</span>'
+            : '<span style="font-size:0.72rem;background:#0a2a1a;color:#6ee7b7;border:1px solid #1a5a3a;border-radius:4px;padding:0.1rem 0.4rem;">live</span>'}
+          <small>${fmtDate(p.date)}</small>
+          <div class="item-actions">
+            <button class="edit-btn" onclick="editPost('${p.id}')">Edit</button>
+            <button class="del-btn"  onclick="deletePost('${p.id}')">Del</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ════════════════════════════════
+    //  TABS
+    // ════════════════════════════════
+    function switchTab(tab) {
+      ['posts','bio','settings'].forEach(t => {
+        document.getElementById('panel-' + t).style.display = t === tab ? '' : 'none';
+        document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+      });
+      if (tab === 'bio')      loadBioIntoForm();
+      if (tab === 'settings') loadSettingsIntoForm();
+    }
+
+    // ════════════════════════════════
+    //  BIO
+    // ════════════════════════════════
+    const DEFAULT_BIO = {
+      name:    'Jean Yvens Alberus',
+      tagline: 'Data Scientist — ML · Deep Learning · MLOps · AWS',
+      body:    "In the realm of Data Science and Machine Learning, my journey began with a deep dive into genomic data mining during my master's program. Equipped with Python and SQL proficiency, I'm passionate about crafting intelligent systems that drive impactful results. I thrive on challenges and am excited to keep pushing the boundaries of what's possible in Data Science."
+    };
+
+    function loadBioIntoForm() {
+      const bio = JSON.parse(localStorage.getItem(BIO_KEY) || 'null') || DEFAULT_BIO;
+      document.getElementById('bio-name-input').value    = bio.name;
+      document.getElementById('bio-tagline-input').value = bio.tagline;
+      document.getElementById('bio-body-input').value    = bio.body;
+    }
+
+    function saveBio() {
+      const bio = {
+        name:    document.getElementById('bio-name-input').value.trim(),
+        tagline: document.getElementById('bio-tagline-input').value.trim(),
+        body:    document.getElementById('bio-body-input').value.trim()
+      };
+      if (!bio.name || !bio.body) { alert('Name and bio cannot be empty.'); return; }
+      localStorage.setItem(BIO_KEY, JSON.stringify(bio));
+      const msg = document.getElementById('bio-save-msg');
+      msg.style.display = 'block';
+      setTimeout(() => { msg.style.display = 'none'; }, 2500);
+    }
+
+    // ════════════════════════════════
+    //  SETTINGS
+    // ════════════════════════════════
+    function loadSettingsIntoForm() {
+      const cfg = getCfg();
+      document.getElementById('cfg-owner').value  = cfg.owner;
+      document.getElementById('cfg-repo').value   = cfg.repo;
+      document.getElementById('cfg-branch').value = cfg.branch;
+      document.getElementById('cfg-path').value   = cfg.path;
+      document.getElementById('cfg-pat').value    = cfg.pat || '';
+    }
+
+    function saveSettings() {
+      const cfg = {
+        owner:  document.getElementById('cfg-owner').value.trim(),
+        repo:   document.getElementById('cfg-repo').value.trim(),
+        branch: document.getElementById('cfg-branch').value.trim(),
+        path:   document.getElementById('cfg-path').value.trim(),
+        pat:    document.getElementById('cfg-pat').value.trim()
+      };
+      localStorage.setItem(CFG_KEY, JSON.stringify(cfg));
+      const msg = document.getElementById('cfg-msg');
+      msg.style.display = 'block';
+      setTimeout(() => { msg.style.display = 'none'; }, 2500);
+    }
+    // ── Sync all live posts to GitHub ──
+    async function syncAllToGitHub() {
+      const published = getPosts().filter(p => !p.draft);
+      if (!published.length) { alert('No published posts to sync.'); return; }
+
+      const btn = document.getElementById('sync-btn');
+      const msg = document.getElementById('sync-msg');
+      btn.disabled = true;
+      btn.textContent = 'Syncing…';
+      msg.style.display = 'none';
+
+      try {
+        await pushPostsJson(published);
+        msg.textContent = `✓ ${published.length} post${published.length > 1 ? 's' : ''} synced to GitHub.`;
+        msg.style.color = '#6ee7b7';
+        msg.style.display = 'block';
+        setTimeout(() => { msg.style.display = 'none'; }, 4000);
+      } catch (e) {
+        msg.textContent = '✗ ' + e.message;
+        msg.style.color = '#f87171';
+        msg.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '↑ Sync to GitHub';
+      }
+    }
+  </script>
+</body>
+</html>

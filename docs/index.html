@@ -1,343 +1,121 @@
-<!DOCTYPE HTML>
-<!--
-	Massively by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
--->
-<html>
-	<head>
-		<title>Jean Yvens Alberus PortfolioProjects</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="is-preload">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jean Yvens Alberus — Blog</title>
+  <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+<body>
 
-		<!-- Wrapper -->
-			<div id="wrapper" class="fade-in">
+  <header>
+    <div class="container">
+      <a href="index.html" class="logo" id="header-name">Jean Yvens Alberus</a>
+      <nav>
+        <a href="index.html" class="nav-active">Blog</a>
+        <a href="about.html">About</a>
+        <a href="admin.html">Admin</a>
+      </nav>
+    </div>
+  </header>
 
-				<!-- Intro -->
-					<div id="intro">
-						<h1>Jean Yvens <br />  
-					</h1>
-						<p> Statistics, Machine learning, Deep Learning, Mlops, CLoud computing(AWS), Analytics
-							 
-							<p>Linkedin profile <a href="https://www.linkedin.com/in/jean-yvens-alberus-986671169">@Jean Yvens Alberus</a> </a>.</p>
-						<ul class="actions">
-							<li><a href="#header" class="button icon solid solo fa-arrow-down scrolly">Continue</a></li>
-						</ul>
-					</div>
+  <section id="blog">
+    <div class="container">
+      <h2>Blog</h2>
+      <div id="post-list"><div class="no-posts" style="opacity:0.5;">Loading…</div></div>
+    </div>
+  </section>
 
-				
+  <footer>
+    <div class="container">
+      &copy; <span id="year"></span> Jean Yvens Alberus
+    </div>
+  </footer>
 
-				<!-- Nav -->
-					<nav id="nav">
-						<ul class="links">
-							<li class="active"><a href="index.html">Projects</a></li>
-			
-						</ul>
-						<ul class="icons">
-							<li><a href="https://www.linkedin.com/in/jean-yvens-alberus-986671169" class="icon brands alt fa-linkedin"><span class="label">linkedin</span></a></li>
-									
-									<li><a href="https://github.com/yvens94/PortfolioProjects" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
-								</ul>
-						</ul>
-					</nav>
+  <!-- Post Modal -->
+  <div class="modal-overlay" id="modal">
+    <div class="modal">
+      <button class="modal-close" id="modal-close">&times;</button>
+      <div class="post-meta" id="modal-date"></div>
+      <h1 id="modal-title"></h1>
+      <div class="prose" id="modal-body"></div>
+    </div>
+  </div>
 
-				<!-- Main -->
-					<div id="main">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
 
-						<!-- Featured Post -->
-							<article class="post featured">
-								<header class="posts">
-									
-									<h2><a href="#">About me<br />
-									</a></h2>
-									<p>In the realm of Data Science and Machine Learning, my journey began with a deep dive into genomic data mining during my master's program. Since then, I've relentlessly pursued excellence in this field. Equipped with a Python and SQL proficiency, I vividly recall the exhilaration of executing my first SQL query and deploying my inaugural linear classifier on test data.
+    // load display name from bio (still local — bio editing is admin-only)
+    const storedBio = JSON.parse(localStorage.getItem('jya_bio') || 'null');
+    if (storedBio && storedBio.name) {
+      document.getElementById('header-name').textContent = storedBio.name;
+      document.title = storedBio.name + ' — Blog';
+    }
 
-										What sets me apart is not only my technical acumen but also my  passion for crafting intelligent systems that drive impactful results. I wake up every day, eager to harness the power of data to unlock insights and drive innovation. I am confident in my ability to deliver tangible value to any team or project.
-										
-										I thrive on challenges, viewing them as opportunities to showcase my expertise and to Learn. Choosing to embark on this journey was undoubtedly the right decision, and I'm excited to continue pushing the boundaries of what's possible in the world of Data Science."
+    let allPosts = [];
 
-										
-									</p>
-								</header>
-								<a href="#" class="small-image"><img src="images/photome2.png" alt="" width = "300" height="300 "/></a>
-								<ul class="actions special">
-								
-								</ul>
-							</article>
-							
-						<!-- Featured Post -->
-						<article class="post featured">
-							<header class="posts">
-								
-								<h2><a href="#">Tech Stack<br />
-								</a></h2>
-								<p>SQL -- PYTHON*(scikit_learn, Pytorch, Tensorflow,, Pandas, Matplotlib, Numpy, Seaborn, Scipy) --
-									GIT* 
-									AWS cloud -- TABLEAU-- POWERBI -- EXCEL -- CI/CD/ --
-									
-									
-										
-								</p>
-							</header>
-							
-							</ul>
-						</article>
-						<div id="main">
+    async function loadPosts() {
+      try {
+        const res = await fetch('posts.json?t=' + Date.now());
+        if (!res.ok) throw new Error('fetch failed');
+        allPosts = await res.json();
+      } catch {
+        allPosts = [];
+      }
+      renderPosts();
+    }
 
-								
+    function fmtDate(iso) {
+      return new Date(iso + 'T12:00:00').toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+    }
 
-						<!-- Posts -->
-							<section class="posts">
-								<!-- Project8 -->
-								<article>
-									<header>
-									
-										<h2><a href="https://github.com/yvens94/mlproject1">END to END Math grade prediction web app .<br />
-										</a></h2>
-									</header>
-									<a href="https://github.com/yvens94/mlproject1" class="image fit"><img src="images/mathml.png" alt=" "  width = "200" height="200 " /></a>
-									<p>
-										Dataset: Kaggle's math performance prediction dataset.
+    function plainText(md) {
+      return md.replace(/[#*`>\-\[\]()!]/g, '').replace(/\n+/g, ' ').trim();
+    }
 
-										Model Experimentation: Explored diverse models for prediction.
+    function escHtml(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
 
-										Automated MVP Model: Selected random forest, establishing a baseline.
+    function renderPosts() {
+      const posts = allPosts.slice().sort((a, b) => b.date.localeCompare(a.date));
+      const el = document.getElementById('post-list');
+      if (!posts.length) {
+        el.innerHTML = '<div class="no-posts">No posts yet.</div>';
+        return;
+      }
+      el.innerHTML = posts.map(p => `
+        <div class="post-card" onclick="openPost('${escHtml(p.id)}')">
+          <div class="post-date">${fmtDate(p.date)}</div>
+          <h3>${escHtml(p.title)}</h3>
+          <div class="post-excerpt">${escHtml(plainText(p.body).slice(0, 180))}</div>
+        </div>
+      `).join('');
+    }
 
-										Pipelines:
+    function openPost(id) {
+      const post = allPosts.find(p => p.id === id);
+      if (!post) return;
+      document.getElementById('modal-date').textContent = fmtDate(post.date);
+      document.getElementById('modal-title').textContent = post.title;
+      document.getElementById('modal-body').innerHTML = marked.parse(post.body);
+      document.getElementById('modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
 
-											Ingestion-Transformation-Training-Deployment
-										AWS Deployments:
+    document.getElementById('modal-close').onclick = closeModal;
+    document.getElementById('modal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
-										Flask, Code Pipeline, Elastic Beanstalk
-										Docker, Flask, GitHub Actions, ECR, EC2
-										Streamlit Deployment: Final deployment due to AWS cost considerations.
-									</p>
-									<ul class="actions special">
-										<li><a href="https://github.com/yvens94/mlproject1"  class="button">View project</a></li><li><a href="https://mathgradeprediction.streamlit.app/" class="button">View Webapp</a></li>
-									</ul>
-									
-								</article>					
-								<!-- Project8 -->
-								<article>
-									<header>
-									
-										<h2><a href="https://github.com/yvens94/AWSEcommerceAnalyticsInfrastructure/">Cadabra Ecommerce Analytics and ML solutions on AWS.<br />
-										</a></h2>
-									</header>
-									<a href="https://github.com/yvens94/AWSEcommerceAnalyticsInfrastructure/" class="image fit"><img src="images/cadabraanalytics.png" alt=" "  width = "200" height="200 " /></a>
-									<p>
-										Order History Service: Enable seamless access to order history directly from the cadabra mobile application.  
-										Log Analysis in Near Real-Time: Implement a robust log analysis system with amazon opensearch. 
-										Recommender System and Notification Service: Develop a recommender system for personalized user experiences. 
-										Data Warehouse and visualization Requirements: Establish a  data warehouse to manage diverse datasets. 
-										Utilize AWS quicksight for in-depth data analysis.
-									</p>
-									<ul class="actions special">
-										<li><a href="https://github.com/yvens94/AWSEcommerceAnalyticsInfrastructure/"  class="button">View project</a></li>
-									</ul>
-									
-								</article>						
+    function closeModal() {
+      document.getElementById('modal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
 
-								<!-- Project7 -->
-								<article>
-									<header>
-									
-										<h2><a href="https://github.com/yvens94/Mnist_project/tree/master">Image classifier,  handwriting digit recognition MNIST from scratch<br />
-										</a></h2>
-									</header>
-									<a href="https://github.com/yvens94/Mnist_project/tree/master" class="image fit"><img src="images/mnistimage.png" alt=" "  width = "200" height="200 " /></a>
-									<p>Experimenting with Regression, Using closed form, 
-										
-										gradient descent  SDG optimization,
-										softmax regression with augmented features, 
-										One vs Rest support vector machines, 
-										Multiclass SVM,  Radial Basis Function SVM, 
-										polynomial Kernel, 
-										cubic transformation
-										Numpy, scipy, Scikit-Learn
-
-										In PART 2: feed foward Neural Network
-										 convolutional neural network using pytorch.
-
-										I had to put the GITHUB repository private because of privacy policy of the MIT,
-										but I am allowed to share the project with employers or interested parties
-										Sorry for the inconvenience.
-									</p>
-									<ul class="actions special">
-										<li><a href="https://github.com/yvens94/Mnist_project/tree/master"  class="button">View project</a></li>
-									</ul>
-									
-								</article>
-
-								<!-- Project6 -->
-								<article>
-									<header>
-									
-										<h2><a href="https://github.com/yvens94/ReviewAnalyzer_MIT">Amazon Review Analizer, Sentiment Analysis from scratch<br />
-										</a></h2>
-									</header>
-									<a href="https://github.com/yvens94/ReviewAnalyzer_MIT" class="image fit"><img src="images/SentiAnalisis.png" alt=" "  width = "200" height="200 " /></a>
-									<p> Perceptron, Average perceptron and Pegassus.
-										 
-										 Tools: Python, Numpy and Scipy
-										 I had to put the GITHUB repository private because of privacy policy of the MIT,
-										 but I am allowed to share the project with employers or interested parties
-										 Sorry for the inconvenience.
-									</p>
-									<ul class="actions special">
-										<li><a href="https://github.com/yvens94/ReviewAnalyzer_MIT"  class="button">View project</a></li>
-									</ul>
-									
-								</article>
-
-								<!-- Project5 -->
-								<article>
-									<header>
-									
-										<h2><a href="https://github.com/yvens94/PortfolioProjects/blob/main/SQLNasvhilleHousingDataCleaning.sql"> Nasville Housing Data cleaning in SQL<br />
-										</a></h2>
-									</header>
-									<a href="https://github.com/yvens94/PortfolioProjects/blob/main/SQLNasvhilleHousingDataCleaning.sql" class="image fit"><img src="images/nashville houses.jfif" alt=" "  width = "200" height="200 " /></a>
-									<p>In this project we cleaned housing data in MySQL</p>
-									<ul class="actions special">
-										<li><a href="https://medium.com/@ayvenjee/data-cleaning-in-sql-988f1ee4c59a" class="button">View blog post</a></li><li><a href="https://github.com/yvens94/PortfolioProjects/blob/main/SQLNasvhilleHousingDataCleaning.sql" class="button">View code</a></li>
-									</ul>
-									
-								</article>
-
-								<!-- Project4-->
-								<article>
-									<header>
-										
-										<h2><a href="https://github.com/yvens94/PortfolioProjects/blob/main/COVIDSQLdataEplorationProject.sql">Covid Data exploration in SQL and PowerBI<br />
-										</a></h2>
-									</header>
-									<a href="https://github.com/yvens94/PortfolioProjects/blob/main/COVIDSQLdataEplorationProject.sql" class="image fit"><img src="images/covid_data55.jfif" alt=""  width = "200" height="200 "/></a>
-									<p>In this project we explored COVID-19 data around the world, by country and by continent.</p>
-									<ul class="actions special">
-										<li><a href="https://medium.com/@ayvenjee/covid-data-exploration-in-sql-dce047f870e2" class="button">View blog post</a></li><li><a href="https://github.com/yvens94/PortfolioProjects/blob/main/COVIDSQLdataEplorationProject.sql" class="button">View code</a></li>
-									</ul>
-								</article>
-
-								<!-- Project3 -->
-								<article>
-									<header>
-										
-										<h2><a href="https://github.com/yvens94/PortfolioProjects/blob/main/R%20project:%20Bike%20share%20business">R project, Bike Share <br />
-										</a></h2>
-									</header>
-									<a href="https://github.com/yvens94/PortfolioProjects/blob/main/R%20project:%20Bike%20share%20business" class="image fit"><img src="images/bikeshare service.jfif" alt="" width = "200" height="200 " /></a>
-									<p>In this project, We analyze the data of a Bike share service to find useful insight about how casual users
-										use the service differently from user with a membership. The results would be use as base for 
-									a marketing program</p>
-									<ul class="actions special">
-										<li><a href="https://medium.com/@ayvenjee/bike-share-service-analysis-in-r-a72df91e5c2d" class="button">view blog post</a></li><li><a href="https://github.com/yvens94/PortfolioProjects/blob/main/R%20project:%20Bike%20share%20business" class="button">view code</a></li>
-									</ul>
-								</article>
-
-								<!-- Project2-->
-								<article>
-									<header>
-										
-										<h2><a href="https://medium.com/@ayvenjee/analysis-of-the-data-profesional-survey-dashboard-in-powerbi-fd47b30187a5"> data profesional survey Analysis in PowerBI <br />
-										</a></h2>
-									</header>
-									<a href="https://medium.com/@ayvenjee/analysis-of-the-data-profesional-survey-dashboard-in-powerbi-fd47b30187a5" class="image fit"><img src="images/powerBIdashboardalone.png" alt="" width = "200" height="200 " /></a>
-									<p>In this project cleaned (PowerQuery) analyzed and created a Dasboard (PowerBI) the data collected from the data profesional survey run by Alex freberg,
-										 to provide an overview of the data careers. How do people get into the field, what they like about it and what tools do they use the most.
-						
-									</p>
-									<ul class="actions special">
-										<li><a href="https://medium.com/@ayvenjee/analysis-of-the-data-profesional-survey-dashboard-in-powerbi-fd47b30187a5" class="button">view project</a></li>
-									</ul>
-								</article>
-
-								<!-- Project1 -->
-
-								<article>
-									<header>
-										
-										<h2><a href="https://public.tableau.com/app/profile/jean.yvens.alberus/viz/Supertoresalesdashboard/Dashboard1">Super store sales dashboard <br />
-										</a></h2>
-									</header>
-									<a href="https://public.tableau.com/app/profile/jean.yvens.alberus/viz/Supertoresalesdashboard/Dashboard1" class="image fit"><img src="images/tableauImage4.png" alt="" width = "200" height="200 " /></a>
-									<p>Imagine A superstore which at the end of a period they want an overview about how the business have been doing, sales, 
-										best geographic area, top products, top sellers , top clients segment etc. We were given some KPI around which we build a dashboard
-										as support for a report and let them know how things are going.
-										 this project we created a dashboard to generate insights for the superstore about sales performances 
-										over 4 years (2014-2017)
-							
-
-									</p>
-									<ul class="actions special">
-										<li><a href="https://public.tableau.com/app/profile/jean.yvens.alberus/viz/Supertoresalesdashboard/Dashboard1" class="button">view project</a></li>
-									</ul>
-								</article>
-								
-							</section>
-
-						<!-- Footer -->
-							<footer>
-								<div class="pagination">
-									<!--<a href="#" class="previous">Prev</a>-->
-									
-									<span class="extra">&hellip;</span>
-									
-									<a href="#" class="next">return to the start</a>
-								</div>
-							</footer>
-
-					</div>
-
-				<!-- Footer -->
-					<footer id="footer">
-						<section>
-							
-						</section>
-						<section class="split contact">
-							<section class="alt">
-								<h3>Address</h3>
-								<p>3412, Boulevard Chatelaine, <br />
-								Delray Beach, FL, zip code: 33445</p>
-							</section>
-							<section>
-								<h3>Phone</h3>
-								<p><a href="#">(561) 275-0881</a></p>
-							</section>
-							<section>
-								<h3>Email</h3>
-								<p><a href="#">ayvenjee@gmail.com</a></p>
-							</section>
-							<section>
-								<h3>Social</h3>
-								<ul class="icons alt">
-									<li><a href="https://www.linkedin.com/in/jean-yvens-alberus-986671169" class="icon brands alt fa-linkedin"><span class="label">linkedin</span></a></li>
-									
-									<li><a href="https://github.com/yvens94/PortfolioProjects" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
-								</ul>
-							</section>
-						</section>
-					</footer>
-
-				<!-- Copyright -->
-					<div id="copyright">
-						<ul><li>&copy; Untitled</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
-					</div>
-
-			</div>
-
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
-
-	</body>
+    loadPosts();
+  </script>
+</body>
 </html>
