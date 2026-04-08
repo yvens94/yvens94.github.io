@@ -406,16 +406,22 @@
 
         if (editId) {
           btn.disabled = true;
-          msg.textContent = 'Updating GitHub…';
+          msg.textContent = 'Removing from GitHub…';
           msg.style.color = '#fbbf24';
           msg.style.display = 'block';
           try {
             await removePostFromGitHub(editId);
           } catch(e) {
-            // non-fatal: post may not have been live
-          } finally {
+            msg.textContent = '✗ Failed to remove from GitHub: ' + e.message;
+            msg.style.color = '#f87171';
+            msg.style.display = 'block';
             btn.disabled = false;
+            setTimeout(() => { msg.style.display = 'none'; }, 5000);
+            resetForm();
+            renderAdminList();
+            return;
           }
+          btn.disabled = false;
         }
 
         msg.textContent = 'Draft saved!';

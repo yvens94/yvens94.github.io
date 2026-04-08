@@ -185,9 +185,31 @@ header nav a.nav-active { color: #fff; font-weight: 600; }
   padding: 0.55rem 1.1rem;
   font-size: 0.95rem;
   color: var(--muted);
-  transition: border-color 0.15s, color 0.15s;
+  transition: border-color 0.15s, color 0.15s, background 0.15s, opacity 0.15s;
 }
 .socials a:hover { border-color: var(--accent); color: #fff; }
+.socials svg { fill: currentColor; width: 16px; height: 16px; flex-shrink: 0; }
+
+/* Brand colors */
+.socials a[href*="linkedin"]             { background: #0A66C2; border-color: #0A66C2; color: #fff; }
+.socials a[href*="linkedin"]:hover       { background: #004182; border-color: #004182; color: #fff; }
+
+.socials a[href*="x.com"],
+.socials a[href*="twitter"]              { background: #000; border-color: #444; color: #fff; }
+.socials a[href*="x.com"]:hover,
+.socials a[href*="twitter"]:hover        { background: #222; border-color: #666; color: #fff; }
+
+.socials a[href*="instagram"]            { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); border-color: transparent; color: #fff; }
+.socials a[href*="instagram"]:hover      { opacity: 0.82; border-color: transparent; color: #fff; }
+
+.socials a[href*="tiktok"]               { background: #010101; border-color: #444; color: #fff; }
+.socials a[href*="tiktok"]:hover         { background: #222; border-color: #666; color: #fff; }
+
+.socials a[href*="facebook"]             { background: #1877F2; border-color: #1877F2; color: #fff; }
+.socials a[href*="facebook"]:hover       { background: #0a5dc9; border-color: #0a5dc9; color: #fff; }
+
+.socials a[href*="threads"]              { background: #000; border-color: #444; color: #fff; }
+.socials a[href*="threads"]:hover        { background: #222; border-color: #666; color: #fff; }
 
 /* ===== BLOG SECTION ===== */
 #blog { padding: 1.5rem 0; }
